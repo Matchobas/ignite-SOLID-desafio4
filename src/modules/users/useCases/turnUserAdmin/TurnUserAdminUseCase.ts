@@ -1,3 +1,4 @@
+import StatusError from "../../../../classes/StatusError";
 import { User } from "../../model/User";
 import { IUsersRepository } from "../../repositories/IUsersRepository";
 
@@ -13,7 +14,10 @@ class TurnUserAdminUseCase {
     const validUser = this.usersRepository.findById(user_id);
 
     if (!validUser) {
-      throw new Error("This id doesn't exist among the created users");
+      throw new StatusError({
+        status: 404,
+        message: "This id doesn't exist among the created users",
+      });
     }
 
     const adminUser = this.usersRepository.turnAdmin(validUser);
