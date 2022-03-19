@@ -10,6 +10,15 @@ class TurnUserAdminUseCase {
 
   execute({ user_id }: IRequest): User {
     // Complete aqui
+    const validUser = this.usersRepository.findById(user_id);
+
+    if (!validUser) {
+      throw new Error("This id doesn't exist among the created users");
+    }
+
+    const adminUser = this.usersRepository.turnAdmin(validUser);
+
+    return adminUser;
   }
 }
 

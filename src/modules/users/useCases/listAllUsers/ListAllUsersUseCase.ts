@@ -10,6 +10,19 @@ class ListAllUsersUseCase {
 
   execute({ user_id }: IRequest): User[] {
     // Complete aqui
+    const requestingUser = this.usersRepository.findById(user_id);
+
+    if (!requestingUser) {
+      throw new Error("This id doesn't exist among the created users");
+    }
+
+    if (!requestingUser.admin) {
+      throw new Error("Users has no admin permission to execute this action");
+    }
+
+    const allUsers = this.usersRepository.list();
+
+    return allUsers;
   }
 }
 
