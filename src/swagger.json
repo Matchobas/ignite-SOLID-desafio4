@@ -1,0 +1,161 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Simple user application",
+    "description": "User application with admin system where only the admin can call some routes",
+    "version": "1.0.0",
+    "contact": {
+      "email": "maalexandria@hotmail.com"
+    }
+  },
+  "paths": {
+    "/users": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Create a new user",
+        "description": "Creates a new not admin user with the information given",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "name": "Lucas Duarte",
+                  "email": "lucas@mail.com"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "New user created"
+          },
+          "400": {
+            "description": "Email already used"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get all created users",
+        "description": "Get a list with all created users, you must use this call only with an admin account",
+        "parameters": [{
+          "in": "header",
+          "name": "user_id",
+          "description": "ID needed to authenticate admin",
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "required": true
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "email": {
+                        "type": "string"
+                      },
+                      "admin": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "This users doesn't exist or doesn't have the permission to make this action"
+          }
+        }
+      }
+    },
+    "/users/{user_id}/admin": {
+      "patch": {
+        "tags": ["Users"],
+        "summary": "Change a normal user to Admin User",
+        "description": "Receive an user ID as a path parameter and, if valid, turns this user in an admin user",
+        "parameters": [{
+          "in": "path",
+          "name": "user_id",
+          "description": "User ID to change admin state",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minimum": 1
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Couldn't find a user with the given User ID"
+          }
+        }
+      }
+    },
+    "/users/{user_id}": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get user data by ID",
+        "description": "Get all of specific user data sending the User ID as a path parameter",
+        "parameters": [{
+          "in": "path",
+          "name": "user_id",
+          "description": "ID to retrieve users data",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "mininum": 1
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "admin": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "This users doesn't exist"
+          }
+        }
+      }
+    }
+  }
+}
